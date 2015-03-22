@@ -1,0 +1,35 @@
+Node Web实战：
+week1:
+1. Target:
+ 1. basic knowledge about http in node
+ 2. learn find the related mode(package) and service
+ 3. learn how to read the doc and learn how to solve the problem
+2. Push address on the browser, what will happen?
+ 1. domain name -> DNS -> return IP -> find the server port -> server do the process and return response -> browser render
+ HTTP REQEST:
+ GET /api/http/html HTTP/1.1    // path + http version
+ Host: nodejs.org // must have this
+
+ 1. domain name look up:
+    > nslookup nodejs.org
+ 2. request
+    > telnet 165.225.133.150 80
+    // then send the request body
+GET /api/http.html HTTP/1.1
+Host: nodejs.org
+
+3. The basic status code:
+   example of response:
+   HTTP/1.1 301 Moved Permanently //status code
+   Server: nginx
+   Date: Sat, 14 Mar 2015 20:25:21 GMT
+   Content-Type: text/html
+   Content-Length: 178
+   Connection: keep-alive // will be kept
+   Location: https://nodejs.org/api/http.html
+4. When request, will request twice, one is the http request, the other one is the
+favicon.ico request.
+5. check the http api
+
+CONNECT:
+1. connect is simple framework to glue together various 'middleware' to handle requests.
