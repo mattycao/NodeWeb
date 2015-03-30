@@ -1,0 +1,50 @@
+Cookie:
+1. the client side, can use the document.cookie to access and even change the cookie value.
+2. We can still login in the user by telnet even if you use httpOnly
+   GET /user HTTP/1.1
+   Cookie: username=rrrrr
+
+   So不要完全信任，比如直接通过 isAdmin=1 来判断是否管理员登录
+
+3. if we use the signed cookie option, then we will access the cookie by using the req.signedCookie
+   before we will use the secret to do the signature
+
+4. The useage of cookie:
+   Every request will bring the cookie, so it better not store a lot of data.
+   Some of the web server will limit the size of the header, like apache, 8190 bytes.
+
+Session:
+   1. use for identify the user, session tracing, and store some useful data on the server.
+   2. Normally, we store a session id on the cookie, then the server will based on the session id to return the session data.
+
+
+State About the HTTP protocol:
+HTTP is stateless protocol, which meaning each request and response  is independent of any previous or future transaction.
+However, now the web is full of state.
+
+Cookie:
+When a user first visits web site, the site can give the user's browser a cookie using an http header.
+
+Then the browser knows to send the cookie in the headers of every additional request it sends to the site.
+
+Limit:
+     Cookie is different from the other cookie, but cookie do not necessarily authenticate users. Since now here the cookie
+     just give us some unique identifier to differentiate one user from the another.
+
+     Since cookie can track what a user is doing they raise privacy concerns in some circles.
+
+Set Cookie:
+    use the Set-Cookie header in the response.
+    A webstie can put any information it likes into a cookie, although there is a size limitation of 4KB.
+
+    The server can never trust any data on the client unless the server encrypts and signs the data, so it is usually easy
+    to give the client and ID and keep session data on the server.
+
+HttpOnly cookies
+    not allow the javascript in client side to read or write the cookie on the client
+
+Type of Cookie
+    persistent cookie will have an attribute of expires, which will lastlong the cookie in the browser.
+
+    domain baidu.com // then can access like help.baidu.com, or something else
+    path will control the cookie
