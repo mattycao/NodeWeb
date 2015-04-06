@@ -1,0 +1,13 @@
+1. 通过referer实现图片防盗链
+    从一个网页跳转，或者网页应用到某一个资源文件的时候，HTTP请求中带有referer表示来源网页的URL
+    通过检查请求头referer来判断来源网页的域名
+    如果来源域名不是收信任的，则返回出错
+    用浏览器直接访问图片网址是没有referer，就是img中用src中要有referer
+
+2. 通过accept-language检测浏览器语言(没写的就是说默认是1）
+   请求头格式：accept-language:zh-CN, zh;q=0.8,
+
+   响应头格式：content-Language:en
+   using the telnet to decide the accept-language:
+GET /HTTP/1.1
+Accept-language:

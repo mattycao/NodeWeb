@@ -7,11 +7,17 @@ var app = express();
 var fs = require('fs');
 var path = require('path');
 var mime = require('mime');
+var static = require('./lib/static_server');
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 
-app.use('/public', serveStatic(__dirname + '/public'))
+app.use('/public', static({
+        root:__dirname +'/public',
+        defaultFile: 'index.css'
+
+    }
+))
 
 
 /*
