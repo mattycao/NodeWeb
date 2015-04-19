@@ -1,0 +1,10 @@
+ORM:
+waterline, the doc
+Here: Part 1 model
+1. define a model you will extend the waterline.Collection object and add in your own attributes
+   and methods.
+
+   Be default, an attribute named id will be automatically added to the model with auto-incrementing.
+   Also it will be the primary key.
+
+   Also each model will also get two timestamp attributes added by default, the createdAt and updatedAt.

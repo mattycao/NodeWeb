@@ -1,0 +1,17 @@
+{
+  "name": "lesson-5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "redis": "^0.12.1",
+    "sails-disk": "^0.10.7",
+    "sails-mysql": "^0.10.11",
+    "waterline": "^0.10.21"
+  }
+}
