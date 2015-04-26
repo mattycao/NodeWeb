@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+    <title>Socket.IO chat</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        .form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        .form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+        .form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #messages { list-style-type: none; margin: 0; padding: 0;   padding-bottom: 45px; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+        .time { color: #aaa; margin-right: 20px; }
+        .msg-log { color: #aaa; }
+        .msg-error { color: #f00; }
+        .user { font-weight: bold; color: blue; margin-right: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+<ul id="messages"></ul>
+<div class="form">
+    <input id="m" autocomplete="off" /><button id="s" type="button" disabled>发送</button>
+</div>
+</body>
+</html>
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+
+    function getCurrentTime () {
+        return new Date().toLocaleTimeString();
+    }
+
+    function appendMessage (type, content) {
+        $('#messages').append('<li><span class="time">' + getCurrentTime() + '</span> <span class="msg-' + type + '">' + content + '</span></li>');
+    }
+
+    var socket = io('http://127.0.0.1:3001/');
+
+    socket.on('error', function (err) {
+        appendMessage('error', err);
+    });
+
+    socket.on('connect', function () {
+        $('#s').prop('disabled', false);
+        appendMessage('log', '连接成功！');
+    });
+
+    socket.on('disconnect', function () {
+        $('#s').prop('disabled', false);
+        appendMessage('error', '连接已断开！');
+    });
+
+    $('#m').keypress(function (e) {
+        var c = e.charCode || e.keyCode || e.which;
+        if (c === 13) {
+            $('#s').click();
+        }
+    });
+
+    $('#s').click(function(){
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+    });
+
+    socket.on('chat message', function (msg) {
+        appendMessage('message', '<span class="user">' + msg.from + '</span>说：' + msg.content);
+    });
+
+    $('body').delegate('.user', 'click', function () {
+        var name = $(this).text();
+        $('#m').val('@' + name + ' ');
+    });
+
+</script>
