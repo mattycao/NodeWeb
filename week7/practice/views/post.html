@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <script src="/assets/jquery/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+
+<div class="container">
+    <h1>{{loginName}}</h1>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-primary" style="margin-top: 20px;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Public An Article</h3>
+                </div>
+                <div class="panel-body">
+                    {{#if error}}
+                    <div class="alert alert-danger" role="alert">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        {{ error }}
+                    </div>
+                    {{/if}}
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="ipt-title">Title</label>
+                            <input type="text" class="form-control" name="title" id="ipt-title" placeholder="Please enter your title" value="{{title}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="ipt-content">Content</label>
+                            <textarea class="form-control" name="content" id="ipt-content" placeholder="Please enter your content" rows="10">{{content}}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
