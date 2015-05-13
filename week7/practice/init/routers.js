@@ -37,7 +37,7 @@ module.exports = function (app) {
         function renderError(err) {
             res.locals.error = err;
             res.locals.body = req.body.name || '';
-            res.render('login', {error: res.locals.error, input: res.locals.body});
+            res.render('login');
         }
     });
 

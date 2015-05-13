@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><%= article.title %></title>
+  <%- include('inc/bootstrap.html') %>
+  <link rel="stylesheet" href="/assets/highlight/styles/default.css">
+  <script src="/assets/highlight/highlight.pack.js"></script>
+</head>
+<body>
+
+<%- include('inc/menu.html') %>
+
+<div class="container">
+  <h1><%= locals.article.title %></h1>
+  <p><%- utils.xss(utils.markdown(locals.article.content)) %></p>
+</div>
+
+</body>
+</html>
+
+<script>
+$('pre code').each(function () {
+  $(this).addClass('javascript');
+  $(this).closest('pre').addClass('highlight');
+});
+hljs.initHighlightingOnLoad();
+</script>

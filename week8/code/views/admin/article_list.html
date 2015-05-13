@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>管理</title>
+  <%- include('../inc/bootstrap.html') %>
+</head>
+<body>
+
+<%- include('../inc/menu.html') %>
+
+<div class="container-fluid">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">文章列表</h3>
+    </div>
+    <ul class="list-group">
+    <% locals.article_list.forEach(function (article) { %>
+      <li class="list-group-item">
+        <%= article.title %>
+        <div class="pull-right">
+          <a href="/article/<%= article.id %>/edit" class="btn btn-xs btn-primary">编辑</a>
+          <a href="/article/<%= article.id %>" class="btn btn-xs btn-info">浏览</a>
+          <button data-id="<%= article.id %>" class="btn btn-xs btn-danger delete-article">删除</button>
+        </div>
+      </li>
+    <% }); %>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>
+
+<script>
+$('.delete-article').click(function () {
+  var $btn = $(this);
+  var id = $btn.data('id');
+  if (!confirm('确定要删除文章#' + id + '吗？')) return;
+  $btn.button('loading');
+  $.post('/article/' + id + '/delete', function (ret) {
+    $btn.button('reset');
+    if (ret.error) return alert(ret.error);
+    location.reload();
+  });
+});
+</script>

@@ -9,6 +9,7 @@ var serveStatic = require('serve-static');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
+var utils = require('./lib/utils');
 
 
 var app = express();
@@ -26,9 +27,13 @@ app.use(session({
 }));
 app.use(function (req, res, next) {
   res.locals.loginName = req.session.loginName;
+  res.locals.logoutCode = req.session.logoutCode;
+  res.locals.utils = utils;
   next();
 });
 
+
 require('./init/routes')(app);
+
 
 app.listen(3001);
