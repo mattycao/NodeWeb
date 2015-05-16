@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var utils = require('./lib/utils');
+var hbs = require('hbs');
 
 
 var app = express();

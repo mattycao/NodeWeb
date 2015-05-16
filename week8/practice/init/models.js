@@ -30,6 +30,18 @@ models.register({
     }
 });
 
+// 注册模型poster
+models.register({
+    identity: 'poster',
+    attributes: {
+        author: 'string',
+        title: 'string',
+        //we better use ethe text type for the long content
+        content: 'text',
+        articleId: 'integer'
+    }
+});
+
 // 初始化所以模型
 models.initialize(function (err) {
     if (err) throw err;

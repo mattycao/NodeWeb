@@ -9,6 +9,7 @@ module.exports = function (app) {
     var utils = require('lei-utils');
     var md = require('../lib/utils').markdown;
     var xss = require('../lib/utils').xss;
+    var noHTMLTag = require('../lib/utils').noHTMLTag;
 
     // check login
     function checkLogin(req, res, next) {
@@ -23,6 +24,7 @@ module.exports = function (app) {
     app.get('/login', function (req, res, next) {
         res.render('login');
     });
+
     app.post('/login', function (req, res, next) {
         if (!req.body.name)
             return renderError('Please enter username!');
@@ -34,13 +36,20 @@ module.exports = function (app) {
             if (!utils.validatePassword(req.body.password, user.password))
                 return renderError('Password is not correct!');
             req.session.loginName = user.name;
-            res.redirect(req.query.return_url || '/');
+            req.session.logoutCode = Math.random().toString();
+            res.redirect(req.query.return_url || '/admin');
         });
         function renderError(err) {
             res.locals.error = err;
             res.locals.body = req.body.name || '';
             res.render('login');
         }
+    });
+
+    app.get('/logout', function (req, res, next) {
+        if (req.query.logoutCode === req.session.logoutCode)
+            delete req.session.loginName;
+        res.redirect('/');
     });
 
     app.get('/register', function (req, res, next) {
@@ -60,8 +69,9 @@ module.exports = function (app) {
                 password: utils.encryptPassword(req.body.password)
             }, function (err) {
                 if (err) return renderError(err);
-
-                res.end('Register successfully.');
+                req.session.loginName = user.name;
+                req.session.logoutCode = Math.random().toString();
+                res.redirect('/admin');
             });
         });
 
@@ -75,20 +85,30 @@ module.exports = function (app) {
 
         models.get('article').find().exec(function (err, list) {
             if (err) return next(err);
+            for (var i = 0; i < list.length; i++) {
+                list[i].content = noHTMLTag(md(list[i].content));
+            }
             res.locals.list = list;
-            res.locals.loginName = req.session.loginName || '';
 
             res.render('index');
         });
     });
 
-    app.get('/post', checkLogin, function (req, res, next) {
-        // check the status of the login user
-        res.locals.loginName = req.session.loginName || '';
-        res.render('post');
+    app.get('/admin', checkLogin, function (req, res, next) {
+
+        models.get('article').find().exec(function (err, list) {
+            if (err) return next(err);
+            res.locals.list = list;
+
+            res.render('admin/index');
+        });
     });
 
-    app.post('/post', checkLogin, function (req, res, next) {
+    app.get('/admin/post', checkLogin, function (req, res, next) {
+        res.render('admin/post');
+    });
+
+    app.post('/admin/post', checkLogin, function (req, res, next) {
         if (!req.body.title)
             return renderError('Please enter title!');
         if (!req.body.content)
@@ -100,28 +120,25 @@ module.exports = function (app) {
             content: req.body.content
         }, function (err) {
             if (err) return renderError(err);
-            res.redirect('/');
+            res.redirect('/admin');
         });
 
         function renderError(err) {
-            res.locals.loginName = req.session.loginName || '';
             res.locals.error = err;
             res.locals.input = req.body;
-            res.render('post');
+            res.render('admin/post');
         }
     });
 
     app.get('/article/:id/edit', checkLogin, function (req, res, next) {
         models.get('article').findOne({id: req.params.id}, function (err, article) {
-            var name = res.locals.loginName || '';
             if (err) return next(err);
             if (!article) return next('Article doesn\'t exist!');
-            res.locals.loginName = req.session.loginName || '';
             res.locals.error = err;
             res.locals.input = article;
 
 
-            res.render('post');
+            res.render('admin/post');
         });
     });
 
@@ -135,34 +152,55 @@ module.exports = function (app) {
             content: req.body.content
         }, function (err) {
             if (err) return renderError(err);
-            res.redirect('/');
+            res.redirect('/admin');
         });
 
         function renderError(err) {
-            res.locals.loginName = req.session.loginName || '';
             res.locals.error = err;
             res.locals.input = req.body;
-            res.render('post');
+            res.render('admin/post');
         }
     });
 
     app.get('/article/:id', function (req, res, next) {
         models.get('article').findOne({id: req.params.id}, function (err, article) {
-            var name = res.locals.loginName || '';
             if (err) return next(err);
             if (!article) return next('Article doesn\'t exist!');
-            res.locals.loginName = req.session.loginName || '';
             res.locals.title = article.title;
             res.locals.content = xss(md(article.content));
 
-            res.render('article_view');
+            models.get('poster').find({articleId: parseInt(req.params.id)}, function (err, posters) {
+                if (err) return next(err);
+                res.locals.posters = posters;
+                res.render('article_view', {layout: null});
+            });
         });
     });
 
-    app.get('/article/:id/delete', function (req, res, next) {
+    app.post('/article/:id', checkLogin, function (req, res, next) {
+        if (!req.body.postTitle) return renderError('Please enter your post title!');
+        if (!req.body.postContent) return renderError('Please enter your content');
+        models.get('poster').create({
+            author: req.session.loginName,
+            title: req.body.postTitle,
+            content: req.body.postContent,
+            articleId: parseInt(req.params.id)
+        }, function (err) {
+            if (err) return renderError(err);
+            res.redirect('/article/' + req.params.id);
+        });
+
+        function renderError(err) {
+            res.locals.error = err;
+            res.locals.input = req.body;
+            res.redirect('/article/' + req.params.id);
+        }
+    });
+
+    app.get('/article/:id/delete', checkLogin, function (req, res, next) {
         models.get('article').destroy({id: req.params.id}, function (err) {
             if (err) return next(err);
-            res.redirect('/');
+            res.redirect('/admin');
         });
     });
 
