@@ -1,0 +1,5 @@
+{
+  "Read": "阅读",
+  "user %s already exist": "用户「%s」已存在",
+  "user {{name}} does not exist": "用户「{{name}}」不存在"
+}

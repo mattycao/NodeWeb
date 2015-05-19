@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><%= article.title %></title>
+  <%- include('inc/bootstrap.html') %>
+  <link rel="stylesheet" href="/assets/highlight/styles/default.css">
+  <script src="/assets/highlight/highlight.pack.js"></script>
+</head>
+<body>
+
+<%- include('inc/menu.html') %>
+
+<div class="container">
+  <h1><%= article.title %></h1>
+  <p><%- article.content %></p>
+  
+  <br /><br />
+  <!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="article-<%= article.id %>" data-title="<%= article.title %>" data-url="/article/<%= article.id %>"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:"node-in-action-blog"};
+  	(function() {
+  		var ds = document.createElement('script');
+  		ds.type = 'text/javascript';ds.async = true;
+  		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  		ds.charset = 'UTF-8';
+  		(document.getElementsByTagName('head')[0] 
+  		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+  	})();
+  </script>
+  <!-- 多说公共JS代码 end -->
+</div>
+
+</body>
+</html>
+
+<script>
+$('pre code').each(function () {
+  $(this).addClass('javascript');
+  $(this).closest('pre').addClass('highlight');
+});
+hljs.initHighlightingOnLoad();
+</script>

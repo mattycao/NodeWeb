@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>首页</title>
+  <%- include('inc/bootstrap.html') %>
+  <style>
+.article-item {
+  margin-bottom: 50px;
+}
+  </style>
+</head>
+<body>
+
+<%- include('inc/menu.html') %>
+
+<div class="container">
+  <% locals.article_list.forEach(function (article) { %>
+  <div class="article-item">
+    <h3><%= article.title %></h3>
+    <p>作者：<%= article.author %></p>
+    <hr />
+    <p><%- article.summary %></p>
+    <p><a class="btn btn-primary" href="/article/<%= article.id %>"><%= __('Read') %></a></p>
+  </div>
+  <% }); %>
+</div>
+
+</body>
+</html>
+
+<script>
+$('.delete-article').click(function () {
+  var $btn = $(this);
+  var id = $btn.data('id');
+  if (!confirm('确定要删除文章#' + id + '吗？')) return;
+  $btn.button('loading');
+  $.post('/article/' + id + '/delete', function (ret) {
+    $btn.button('reset');
+    if (ret.error) return alert(ret.error);
+    location.reload();
+  });
+});
+</script>
