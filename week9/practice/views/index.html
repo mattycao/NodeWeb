@@ -1,0 +1,13 @@
+{{#if loginName}}
+<h1>{{loginName}}</h1>
+<a href="/admin/post" class="btn btn-primary">Public a Article</a>
+{{else}}
+<h1><a href="/login" class="btn btn-primary">Login</a></h1>
+{{/if}}
+{{#each list}}
+<div class="article-item">
+    <h3>{{this.title}}</h3>
+    <p>{{{this.content}}}</p>
+    <p><a class="btn btn-primary" href="/article/{{this.id}}">Read</a></p>
+</div>
+{{/each}}

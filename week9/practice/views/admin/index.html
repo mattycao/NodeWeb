@@ -1,0 +1,23 @@
+{{#if loginName}}
+<h1>{{loginName}}</h1>
+<a href="/admin/post" class="btn btn-primary">Public a Article</a>
+{{else}}
+<h1><a href="/login" class="btn btn-primary">Login</a></h1>
+{{/if}}
+<div class="panel panel-primary" style="margin-top: 50px;">
+    <div class="panel-heading">
+        <h3 class="panel-title">Article List</h3>
+    </div>
+    <ul class="list-group">
+        {{#each list}}
+        <li class="list-group-item">
+            {{this.title}}
+            <div class="pull-right">
+                <a href="/article/{{this.id}}/edit" class="btn btn-xs btn-primary">Edit</a>
+                <a href="/article/{{this.id}}" class="btn btn-xs btn-info">Browser</a>
+                <a href="/article/{{this.id}}/delete" class="btn btn-xs btn-warning">delete</a>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</div>
