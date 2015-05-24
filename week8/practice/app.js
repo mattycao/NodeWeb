@@ -20,6 +20,8 @@ app.use('/assets', serveStatic(path.resolve(__dirname, 'assets')));
 
 app.use(cookieParser('your secret key'));
 app.use(session({
+    resave: true,
+    saveUninitialized: true,
     secret: 'your secret key',
     store: new RedisStore({
         port: 6379,
