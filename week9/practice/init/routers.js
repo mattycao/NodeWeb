@@ -82,14 +82,17 @@ module.exports = function (app) {
         }
     });
     app.get('/', function (req, res, next) {
-
+        var page = req.query.p? parseInt(req.query.p) : 1;
         models.get('article').find().exec(function (err, list) {
             if (err) return next(err);
-            for (var i = 0; i < list.length; i++) {
+            for (var i = (page - 1) * 2; i < list.length && i < page * 2; i++) {
                 list[i].content = noHTMLTag(md(list[i].content));
             }
-            res.locals.list = list;
-
+            res.locals.list = list.slice((page - 1) * 2, i);
+            res.locals.isFirstPage = ((page - 1) == 0);
+            res.locals.isLastPage = (page * 2 >= list.length);
+            res.locals.pagePrev = page - 1;
+            res.locals.pageNext = page + 1;
             res.render('index');
         });
     });
